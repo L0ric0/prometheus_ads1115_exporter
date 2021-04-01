@@ -1,0 +1,4 @@
+-I prometheus_ads1115_exporter/include/
+-I Debug/vcpkg_installed/arm64-linux/include/
+-I libs/ads1115/ads1115/include/
+-I libs/argparse/include/
