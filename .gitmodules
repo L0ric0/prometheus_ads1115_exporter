@@ -1,0 +1,9 @@
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg.git
+[submodule "libs/ads1115"]
+	path = libs/ads1115
+	url = https://github.com/L0ric0/ads1115.git
+[submodule "libs/argparse"]
+	path = libs/argparse
+	url = https://github.com/p-ranav/argparse.git
