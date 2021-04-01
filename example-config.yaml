@@ -1,0 +1,62 @@
+---
+listen_address: "127.0.0.1"
+port: 8080
+# List of directorys that describe an ADS1113/4/5 to be monitored.
+# The `name`, `device_path` and `device_address` keys have to be specified for each device.
+# All settings that represent settings of the configuration register of the ADS1113/4/5
+# default to the values specified in the data sheet of the ADS1113/4/5.
+# If you don't know to which value to set a specific setting please consult the data sheet of the ADS1113/4/5:
+# https://cdn-shop.adafruit.com/datasheets/ads1115.pdf
+devices:
+    # The name of the monitored ADS1113/4/5.
+    # This will be used as the name of the prometheus metric.
+  - name: ads1115
+    # The path to the userspace i2c device.
+    # On linux these are normaly named `/dev/i2c-[0-9]`.
+    device_path: /dev/i2c-1
+    # The address of the ADS1113/4/5 on the i2c bus.
+    # Can also be given as the line connected to the ADDR line of the ADS:
+    # GND = 0x48 = 72
+    # VDD = 0x49 = 73
+    # SDA = 0x4a = 74
+    # SCL = 0x4b = 75
+    device_address: GND
+    # Wether or not the ADS1113/4/5 should operate in continuous conversion mode or not.
+    # By default this is set to false, which results in slightly slower responses from the ADS1113/4/5
+    # but uses far less energy when using the default prometheus scrap interval.
+    # (The default results in one conversion per 15 seconds and not in 8 per second.)
+    continuous_conversion: false
+    # The speed of the conversion in sampels per second.
+    # Leagel values are `8`, `16`, `32`, `64`, `128`, `250`, `475` and `860`.    
+    data_rate: 128
+    # Sets the fullscale input of the programmable gain amplifier.
+    # Leagel values are `6.144`, `4.096`, `2.048`, `1.024`, `0.512` and `0.256`.
+    programmable_gain_amplifier: 2.048
+    # Configuration of the inbuild comparator of the ADS1114/5.
+    comparator:
+        # Wether or not he comparator is enabled.
+        # If disabled the the ALERT/RDY pin is set into a high state.
+        enabled: false
+        # Number of assertions required before asserting the ALERT/RDY pin.
+        # Leagel values are `1`, `2` and `4`.
+        queue: 1
+        # Working mode of the comparator.
+        # Can be eather `traditional` or `window`.
+        mode: traditional
+        # Polarity of the ALERT/RDY pin.
+        # When set to `low` the ALERT/RDY pin in active low.
+        # When set to `high` the ALERT/RDY pin is active high.
+        polarity: low
+        # Wether the comparator has latching or non latching behavior.
+        # Please refere to the datasheet for further information.
+        latching: false
+        # Thresholds used by the comparator.
+        # For further information how the thresholds work please refere to the datasheet.
+        thresholds:
+            high: 32767
+            low: -32768
+    # List of the inputs to query.
+    # Leagel values are `AIN0_AIN1`, `AIN0_AIN3`, `AIN1_AIN3`,
+    # `AIN2_AIN3`, `AIN0_GND`, `AIN1_GND`, `AIN2_GND` and `AIN3_GND`.
+    inputs:
+      - AIN0_AIN1
