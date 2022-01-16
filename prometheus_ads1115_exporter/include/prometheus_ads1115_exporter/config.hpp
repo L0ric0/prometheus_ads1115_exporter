@@ -59,60 +59,15 @@ namespace ads1115_exporter
         std::vector<ADS1115::MUX> inputs {};
     };
 
-    class Config
-    {
-      private:
-        const std::string m_listen_address;
-        const std::string m_port;
+    struct Config {
+        const std::string listen_address;
+        const std::string port;
 
-        const std::vector<Device> m_devices;
+        const std::vector<Device> devices;
 
-      public:
         Config(
             const argparse::ArgumentParser& comandline_arguments,
             const YAML::Node& configuration_file);
-
-        std::vector<Device> get_devices(const YAML::Node& config_devices) const;
-        ADS1115::ADDR get_address(
-            const YAML::Node& node,
-            const std::string& key,
-            const std::unordered_map<std::string, ADS1115::ADDR>& map,
-            const std::string& default_value) const;
-        ADS1115::Config get_comparator(const YAML::Node& node, ADS1115::Config device_config) const;
-
-        template <typename TRead, typename TResult>
-        TResult get_value(
-            const YAML::Node& node,
-            const std::string& key,
-            const std::unordered_map<TRead, TResult>& map,
-            const TRead& default_value) const
-        {
-            TRead value = node[key].as<TRead>(default_value);
-
-            if (auto it = map.find(value); it != map.end()) {
-                return it->second;
-            }
-
-            spdlog::critical("Illeagel value `{}` for key `{}` found.", value, key);
-            spdlog::critical("Leagel values are: {}", get_map_keys(map));
-            exit(1);
-        }
-
-        ADS1115::MUX get_input(
-            const YAML::Node& node,
-            const std::unordered_map<std::string, ADS1115::MUX>& map,
-            const std::string& default_value) const
-        {
-            std::string value = node.as<std::string>(default_value);
-
-            if (auto it = map.find(value); it != map.end()) {
-                return it->second;
-            }
-
-            spdlog::critical("Illeagel value `{}` for `key inputs` found.", value);
-            spdlog::critical("Leagel values are: {}", get_map_keys(map));
-            exit(1);
-        };
 
         static std::unordered_map<double, ADS1115::PGA> fullscale_pga_map()
         {
@@ -169,7 +124,15 @@ namespace ads1115_exporter
                 { "AIN2_GND", ADS1115::MUX::AIN2_GND },   { "AIN3_GND", ADS1115::MUX::AIN3_GND },
             };
         };
-
+        static std::unordered_map<ADS1115::MUX, std::string> input_str_map()
+        {
+            return {
+                { ADS1115::MUX::AIN0_AIN1, "AIN0_AIN1" }, { ADS1115::MUX::AIN0_AIN3, "AIN0_AIN3" },
+                { ADS1115::MUX::AIN1_AIN3, "AIN1_AIN3" }, { ADS1115::MUX::AIN2_AIN3, "AIN2_AIN3" },
+                { ADS1115::MUX::AIN0_GND, "AIN0_GND" },   { ADS1115::MUX::AIN1_GND, "AIN1_GND" },
+                { ADS1115::MUX::AIN2_GND, "AIN2_GND" },   { ADS1115::MUX::AIN3_GND, "AIN3_GND" },
+            };
+        };
         static std::unordered_map<std::string, ADS1115::ADDR> str_address_map()
         {
             return {
@@ -178,6 +141,49 @@ namespace ads1115_exporter
                 { "SDA", ADS1115::ADDR::SDA },
                 { "SCL", ADS1115::ADDR::SCL },
             };
+        };
+
+      private:
+        std::vector<Device> get_devices(const YAML::Node& config_devices) const;
+        ADS1115::ADDR get_address(
+            const YAML::Node& node,
+            const std::string& key,
+            const std::unordered_map<std::string, ADS1115::ADDR>& map,
+            const std::string& default_value) const;
+        ADS1115::Config get_comparator(const YAML::Node& node, ADS1115::Config device_config) const;
+
+        template <typename TRead, typename TResult>
+        TResult get_value(
+            const YAML::Node& node,
+            const std::string& key,
+            const std::unordered_map<TRead, TResult>& map,
+            const TRead& default_value) const
+        {
+            TRead value = node[key].as<TRead>(default_value);
+
+            if (auto it = map.find(value); it != map.end()) {
+                return it->second;
+            }
+
+            spdlog::critical("Illeagel value `{}` for key `{}` found.", value, key);
+            spdlog::critical("Leagel values are: {}", get_map_keys(map));
+            exit(1);
+        }
+
+        ADS1115::MUX get_input(
+            const YAML::Node& node,
+            const std::unordered_map<std::string, ADS1115::MUX>& map,
+            const std::string& default_value) const
+        {
+            std::string value = node.as<std::string>(default_value);
+
+            if (auto it = map.find(value); it != map.end()) {
+                return it->second;
+            }
+
+            spdlog::critical("Illeagel value `{}` for `key inputs` found.", value);
+            spdlog::critical("Leagel values are: {}", get_map_keys(map));
+            exit(1);
         };
     };
 } // namespace ads1115_exporter

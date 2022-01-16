@@ -25,9 +25,9 @@ namespace ads1115_exporter
     Config::Config(
         const argparse::ArgumentParser& comandline_arguments,
         const YAML::Node& configuration_file)
-        : m_listen_address(configuration_file["listen_address"].as<std::string>()),
-          m_port(configuration_file["port"].as<std::string>()),
-          m_devices(get_devices(configuration_file["devices"]))
+        : listen_address(configuration_file["listen_address"].as<std::string>()),
+          port(configuration_file["port"].as<std::string>()),
+          devices(get_devices(configuration_file["devices"]))
     {
         spdlog::info("Config read.");
     };
