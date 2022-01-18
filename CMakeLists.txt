@@ -26,7 +26,6 @@ add_subdirectory(tests)
 
 ### LIBS ###
 add_subdirectory(libs/ads1115)
-add_subdirectory(libs/argparse)
 
 ### DOCS ###
 find_package(Doxygen OPTIONAL_COMPONENTS dot)

@@ -1,10 +1,11 @@
 {
     "name": "prometheus-ads1115-exporter",
     "version-string": "0.0.1",
-    "dependencies": [
-        "gtest",
-        "spdlog",
-        "prometheus-cpp",
-        "yaml-cpp"
-    ]
+  "dependencies": [
+    "gtest",
+    "spdlog",
+    "prometheus-cpp",
+    "yaml-cpp",
+    "argparse"
+  ]
 }
